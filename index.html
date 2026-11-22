@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>程静文 · 个人主页 & 游戏厅</title>
+<style>
+  :root{
+    --pink:#ff8fab;
+    --pink-deep:#e56b8d;
+    --purple:#a78bfa;
+    --blue:#7dd3fc;
+    --ink:#2b2440;
+    --ink-soft:#6b6480;
+    --bg:#fff7fa;
+    --card:rgba(255,255,255,.72);
+    --radius:22px;
+    --shadow:0 18px 50px rgba(180,120,160,.18);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    color:var(--ink);background:var(--bg);line-height:1.75;overflow-x:hidden;
+  }
+  .blob{position:fixed;border-radius:50%;filter:blur(70px);opacity:.5;z-index:-1;pointer-events:none;}
+  .blob.b1{width:420px;height:420px;background:#ffc2d4;top:-120px;left:-100px;animation:float 14s ease-in-out infinite;}
+  .blob.b2{width:380px;height:380px;background:#c9b6ff;top:38%;right:-140px;animation:float 18s ease-in-out infinite reverse;}
+  .blob.b3{width:340px;height:340px;background:#a5e4ff;bottom:-120px;left:18%;animation:float 16s ease-in-out infinite;}
+  @keyframes float{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(40px,50px) scale(1.12);}}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(255,247,250,.8);border-bottom:1px solid rgba(255,255,255,.6);}
+  nav{max-width:1080px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;}
+  .logo{font-weight:800;letter-spacing:2px;font-size:18px;background:linear-gradient(90deg,var(--pink-deep),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  nav ul{display:flex;gap:22px;list-style:none;flex-wrap:wrap;}
+  nav a{color:var(--ink-soft);text-decoration:none;font-size:14.5px;transition:.25s;position:relative;}
+  nav a:hover{color:var(--pink-deep);}
+  nav a::after{content:"";position:absolute;left:0;bottom:-5px;width:0;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--pink),var(--purple));transition:.3s;}
+  nav a:hover::after{width:100%;}
+
+  .hero{padding:80px 0 60px;display:grid;grid-template-columns:320px 1fr;gap:56px;align-items:center;}
+  .avatar{position:relative;width:270px;height:270px;margin:0 auto;}
+  .avatar .ring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,var(--pink),var(--purple),var(--blue),var(--pink));animation:spin 9s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .avatar .inner{position:absolute;inset:14px;border-radius:50%;background:linear-gradient(150deg,#fff,#ffe9f0);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:inset 0 0 40px rgba(255,150,180,.25);}
+  .avatar .zi{font-size:88px;font-weight:800;letter-spacing:6px;background:linear-gradient(135deg,var(--pink-deep),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .avatar .en{margin-top:2px;font-size:12px;letter-spacing:4px;color:var(--ink-soft);}
+  .badge{position:absolute;bottom:8px;right:0;background:#fff;color:var(--pink-deep);font-size:13px;font-weight:700;padding:8px 16px;border-radius:999px;box-shadow:var(--shadow);}
+  h1{font-size:52px;line-height:1.25;letter-spacing:2px;font-weight:800;}
+  h1 .grad{background:linear-gradient(90deg,var(--pink-deep),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .subtitle{margin-top:14px;font-size:17px;color:var(--ink-soft);}
+  .tags{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px;}
+  .tag{padding:7px 16px;border-radius:999px;font-size:14px;background:rgba(255,255,255,.85);border:1px solid rgba(255,143,171,.35);color:var(--pink-deep);box-shadow:0 4px 14px rgba(255,143,171,.16);}
+  .hero-btns{margin-top:30px;display:flex;gap:14px;flex-wrap:wrap;}
+  .btn{display:inline-block;padding:13px 30px;border-radius:999px;text-decoration:none;font-size:15px;font-weight:600;transition:transform .25s,box-shadow .25s;}
+  .btn:hover{transform:translateY(-3px);}
+  .btn.primary{background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;box-shadow:0 12px 28px rgba(167,139,250,.4);}
+  .btn.ghost{background:rgba(255,255,255,.8);color:var(--ink);border:1px solid rgba(0,0,0,.06);}
+
+  section{padding:60px 0;}
+  .sec-title{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
+  .sec-title h2{font-size:28px;letter-spacing:1px;}
+  .sec-title .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--purple));}
+  .sec-title .line{flex:1;height:1px;background:linear-gradient(90deg,rgba(255,143,171,.5),transparent);}
+
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:18px;}
+  .card{background:var(--card);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.9);border-radius:var(--radius);padding:22px 20px;box-shadow:var(--shadow);transition:transform .3s,box-shadow .3s;}
+  .card:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(180,120,160,.26);}
+  .card .k{font-size:13px;color:var(--ink-soft);letter-spacing:1px;}
+  .card .v{margin-top:6px;font-size:24px;font-weight:800;}
+  .card .v small{font-size:14px;font-weight:600;color:var(--ink-soft);margin-left:3px;}
+  .card .ico{font-size:20px;margin-bottom:8px;}
+
+  .about{background:var(--card);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.9);border-radius:26px;padding:38px 40px;box-shadow:var(--shadow);}
+  .about p{font-size:16.5px;color:#4a4359;margin-bottom:14px;}
+  .quote{margin-top:20px;padding:16px 20px;border-left:4px solid var(--pink);background:rgba(255,143,171,.1);border-radius:0 14px 14px 0;font-size:16px;color:var(--pink-deep);}
+
+  .timeline{position:relative;padding-left:34px;}
+  .timeline::before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:linear-gradient(180deg,var(--pink),var(--purple),var(--blue));border-radius:2px;}
+  .tl-item{position:relative;margin-bottom:26px;}
+  .tl-item::before{content:"";position:absolute;left:-31px;top:8px;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--pink);box-shadow:0 0 0 4px rgba(255,143,171,.18);}
+  .tl-item h3{font-size:18px;}
+  .tl-item .time{font-size:13px;color:var(--pink-deep);font-weight:700;margin-bottom:4px;}
+  .tl-item p{font-size:15px;color:var(--ink-soft);}
+
+  .skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px 40px;}
+  .skill .top{display:flex;justify-content:space-between;font-size:15px;margin-bottom:8px;}
+  .skill .bar{height:10px;border-radius:999px;background:rgba(0,0,0,.06);overflow:hidden;}
+  .skill .bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--pink),var(--purple));width:0;transition:width 1.4s ease;}
+  .skill .top span:last-child{color:var(--pink-deep);font-weight:700;}
+
+  /* ===== 游戏厅 ===== */
+  .tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;}
+  .tab{padding:10px 20px;border-radius:999px;border:1px solid rgba(255,143,171,.35);background:rgba(255,255,255,.85);color:var(--ink-soft);cursor:pointer;font-size:14.5px;font-weight:600;transition:.25s;}
+  .tab:hover{transform:translateY(-2px);}
+  .tab.active{background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;border-color:transparent;box-shadow:0 10px 24px rgba(167,139,250,.35);}
+  .panel{display:none;background:var(--card);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.9);border-radius:26px;padding:28px;box-shadow:var(--shadow);}
+  .panel.active{display:block;}
+  .g-top{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:18px;}
+  .g-stat{display:flex;gap:10px;flex-wrap:wrap;}
+  .pill{background:rgba(255,255,255,.9);border:1px solid rgba(255,143,171,.3);border-radius:999px;padding:6px 16px;font-size:14px;font-weight:700;color:var(--ink);}
+  .pill b{color:var(--pink-deep);}
+  .g-btn{padding:9px 20px;border:none;border-radius:999px;cursor:pointer;font-size:14px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--pink),var(--purple));box-shadow:0 8px 20px rgba(167,139,250,.35);transition:transform .2s;}
+  .g-btn:hover{transform:translateY(-2px);}
+  .g-btn.gray{background:linear-gradient(135deg,#c9c4d6,#a8a2bb);box-shadow:none;}
+  .tip{font-size:13.5px;color:var(--ink-soft);margin-top:14px;}
+  .stage{display:flex;justify-content:center;}
+  .msg{text-align:center;font-size:15px;color:var(--pink-deep);font-weight:700;min-height:22px;margin-bottom:10px;}
+
+  /* 贪吃蛇 */
+  #snakeCanvas{background:linear-gradient(160deg,#fff,#fdeef4);border-radius:18px;box-shadow:inset 0 0 0 2px rgba(255,143,171,.28);display:block;max-width:100%;}
+  .dpad{display:grid;grid-template-columns:repeat(3,54px);grid-template-rows:repeat(3,54px);gap:8px;justify-content:center;margin-top:16px;}
+  .dpad button{border:none;border-radius:14px;background:rgba(255,255,255,.95);box-shadow:0 6px 16px rgba(180,120,160,.22);font-size:20px;cursor:pointer;color:var(--pink-deep);}
+  .dpad button:active{transform:scale(.94);}
+  .dpad .sp{visibility:hidden;}
+
+  /* 2048 */
+  .g2048{width:340px;max-width:100%;background:linear-gradient(160deg,#fff,#fdeef4);border-radius:18px;padding:12px;box-shadow:inset 0 0 0 2px rgba(255,143,171,.28);}
+  .grid2048{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  .cell{aspect-ratio:1;border-radius:12px;background:rgba(255,143,171,.10);display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff;transition:transform .12s;}
+  .cell.pop{transform:scale(1.12);}
+  .v2{background:#ffe1ec;color:#e56b8d}.v4{background:#ffc2d4;color:#b84675}.v8{background:#ffa1c0;color:#fff}
+  .v16{background:#f98fae;color:#fff}.v32{background:#e5709b;color:#fff}.v64{background:#c86fd8;color:#fff}
+  .v128{background:#a78bfa;color:#fff;font-size:22px}.v256{background:#8b6ef2;color:#fff;font-size:22px}
+  .v512{background:#7c5ce0;color:#fff;font-size:22px}.v1024{background:#6a48cc;color:#fff;font-size:18px}
+  .v2048{background:#5a37b8;color:#fff;font-size:18px}
+
+  /* 记忆翻牌 */
+  .memo{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;width:400px;max-width:100%;}
+  .mcard{aspect-ratio:.8;perspective:600px;cursor:pointer;}
+  .mcard .in{position:relative;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d;}
+  .mcard.flip .in{transform:rotateY(180deg);}
+  .mcard .f,.mcard .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 6px 16px rgba(180,120,160,.2);}
+  .mcard .f{background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;font-size:26px;}
+  .mcard .b{background:#fff;transform:rotateY(180deg);}
+  .mcard.done{opacity:.55;cursor:default;}
+
+  /* 打地鼠 */
+  .mole{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:400px;max-width:100%;}
+  .hole{position:relative;aspect-ratio:1;background:radial-gradient(ellipse at 50% 35%,#f4dde6,#ecd7e2);border-radius:50%;overflow:hidden;box-shadow:inset 0 8px 18px rgba(120,80,100,.18);cursor:pointer;}
+  .hole .m{position:absolute;left:50%;bottom:-100%;transform:translateX(-50%);font-size:40px;transition:bottom .18s;}
+  .hole.up .m{bottom:8%;}
+  .hole.hit .m{filter:drop-shadow(0 0 8px #ff8fab);}
+
+  /* 作品集 */
+  .works{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;}
+  .work{display:block;background:var(--card);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.9);border-radius:var(--radius);padding:26px 28px;box-shadow:var(--shadow);text-decoration:none;color:var(--ink);transition:transform .3s,box-shadow .3s;}
+  .work:hover{transform:translateY(-6px);box-shadow:0 24px 60px rgba(180,120,160,.26);}
+  .work .w-ico{font-size:34px;margin-bottom:10px;}
+  .work h3{font-size:20px;margin-bottom:8px;}
+  .work p{font-size:14.5px;color:var(--ink-soft);}
+  .work .w-link{display:inline-block;margin-top:14px;padding:8px 18px;border-radius:999px;background:linear-gradient(135deg,var(--pink),var(--purple));color:#fff;font-size:13.5px;font-weight:700;transition:opacity .25s;}
+  .work:hover .w-link{opacity:.9;}
+
+  .contact{display:flex;flex-wrap:wrap;gap:16px;}
+  .contact .item{flex:1;min-width:200px;display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid rgba(255,255,255,.9);border-radius:18px;padding:18px 22px;box-shadow:var(--shadow);}
+  .contact .item .ico{font-size:22px;}
+  .contact .item .t{font-size:13px;color:var(--ink-soft);}
+  .contact .item .c{font-size:15.5px;font-weight:600;}
+  footer{text-align:center;padding:40px 20px 60px;color:var(--ink-soft);font-size:14px;}
+
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease;}
+  .reveal.show{opacity:1;transform:none;}
+
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr;padding-top:48px;text-align:center;}
+    .tags,.hero-btns{justify-content:center;}
+    h1{font-size:38px;}
+    .avatar{width:220px;height:220px;}
+    .avatar .zi{font-size:70px;}
+    nav ul{display:none;}
+    .about{padding:28px 22px;}
+    .panel{padding:20px 16px;}
+    .memo,.mole{gap:10px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="blob b1"></div>
+<div class="blob b2"></div>
+<div class="blob b3"></div>
+
+<header>
+  <nav>
+    <div class="logo">CHENG · JINGWEN</div>
+    <ul>
+      <li><a href="#home">首页</a></li>
+      <li><a href="#about">关于我</a></li>
+      <li><a href="#edu">教育经历</a></li>
+      <li><a href="#skill">能力兴趣</a></li>
+      <li><a href="#works">💼 作品集</a></li>
+      <li><a href="#games">🎮 游戏厅</a></li>
+      <li><a href="#contact">联系</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="wrap">
+
+  <section class="hero" id="home">
+    <div class="avatar reveal">
+      <div class="ring"></div>
+      <div class="inner">
+        <div class="zi">静文</div>
+        <div class="en">CHENG JING WEN</div>
+      </div>
+      <div class="badge">✨ 2024级</div>
+    </div>
+    <div class="reveal">
+      <h1>你好，我是<span class="grad">程静文</span></h1>
+      <p class="subtitle">成都大学 · 工商管理专业 · 2024 级本科生 ｜ 一个认真生活、慢慢发光的 21 岁女孩</p>
+      <div class="tags">
+        <span class="tag">🌸 21 岁</span>
+        <span class="tag">🎓 工商管理</span>
+        <span class="tag">📍 四川成都</span>
+        <span class="tag">💗 温柔且坚定</span>
+        <span class="tag">🌿 热爱生活</span>
+      </div>
+      <div class="hero-btns">
+        <a class="btn primary" href="#games">🎮 去游戏厅玩两把</a>
+        <a class="btn ghost" href="#about">了解我</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="info" class="reveal">
+    <div class="sec-title"><span class="dot"></span><h2>基本信息</h2><span class="line"></span></div>
+    <div class="cards">
+      <div class="card"><div class="ico">🎂</div><div class="k">年龄</div><div class="v">21<small>岁</small></div></div>
+      <div class="card"><div class="ico">👧</div><div class="k">性别</div><div class="v">女生</div></div>
+      <div class="card"><div class="ico">📏</div><div class="k">身高</div><div class="v">167<small>cm</small></div></div>
+      <div class="card"><div class="ico">⚖️</div><div class="k">体重</div><div class="v">90<small>斤</small></div></div>
+      <div class="card"><div class="ico">🏫</div><div class="k">学校</div><div class="v" style="font-size:20px;">成都大学</div></div>
+      <div class="card"><div class="ico">📚</div><div class="k">专业 / 年级</div><div class="v" style="font-size:19px;">工商管理 24 级</div></div>
+    </div>
+  </section>
+
+  <section id="about" class="reveal">
+    <div class="sec-title"><span class="dot"></span><h2>关于我</h2><span class="line"></span></div>
+    <div class="about">
+      <p>大家好，我是<strong>程静文</strong>，今年 21 岁，来自成都大学工商管理专业 2024 级。名字里有个"静"字，性格里也确实带着一份安静——喜欢把事情想清楚再去做，习惯把日子过得有条理。</p>
+      <p>在学习上，我对工商管理有着持续的热情，正在扎实地学习管理学、经济学、市场营销、会计学等核心课程，也乐于参加案例分析、小组展示这类能把知识用起来的活动。课余时间我喜欢阅读、拍照记录生活，也爱去探索成都街头的小店和美食。</p>
+      <p>我是一个既享受独处、也喜欢与人相处的人：一个人的时候看看书、散散步，也喜欢玩点小游戏放松一下（下面就是我自己做的小游戏厅，欢迎来挑战我的最高分 😉）。</p>
+      <div class="quote">"不慌不忙，把自己活成一道温柔而有力量的光。"</div>
+    </div>
+  </section>
+
+  <section id="edu" class="reveal">
+    <div class="sec-title"><span class="dot"></span><h2>教育经历</h2><span class="line"></span></div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="time">2024 — 至今</div>
+        <h3>成都大学 · 工商管理（本科）</h3>
+        <p>系统学习管理学、微观/宏观经济学、市场营销、会计学、人力资源管理等专业课程，积极参与课堂讨论与小组项目。</p>
+      </div>
+      <div class="tl-item">
+        <div class="time">持续进行中</div>
+        <h3>技能与证书准备</h3>
+        <p>正在备考英语四级、计算机二级，并自学 Office 办公软件与数据分析基础，提升职场竞争力。</p>
+      </div>
+      <div class="tl-item">
+        <div class="time">课余实践</div>
+        <h3>校园活动与社会实践</h3>
+        <p>参与社团与志愿者活动，在团队协作、沟通表达与活动策划中不断锻炼自己。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="skill" class="reveal">
+    <div class="sec-title"><span class="dot"></span><h2>能力与兴趣</h2><span class="line"></span></div>
+    <div class="skills">
+      <div class="skill"><div class="top"><span>📊 管理学基础</span><span>80%</span></div><div class="bar"><i data-w="80"></i></div></div>
+      <div class="skill"><div class="top"><span>🗣️ 沟通表达</span><span>85%</span></div><div class="bar"><i data-w="85"></i></div></div>
+      <div class="skill"><div class="top"><span>🤝 团队协作</span><span>90%</span></div><div class="bar"><i data-w="90"></i></div></div>
+      <div class="skill"><div class="top"><span>💻 办公软件</span><span>75%</span></div><div class="bar"><i data-w="75"></i></div></div>
+      <div class="skill"><div class="top"><span>✍️ 文案写作</span><span>78%</span></div><div class="bar"><i data-w="78"></i></div></div>
+      <div class="skill"><div class="top"><span>📷 摄影记录</span><span>82%</span></div><div class="bar"><i data-w="82"></i></div></div>
+    </div>
+  </section>
+
+  <!-- ======= 游戏厅 ======= -->
+  <section id="games" class="reveal">
+    <div class="sec-title"><span class="dot"></span><h2>🎮 静文的小游戏厅</h2><span class="line"></span></div>
+
+    <div class="tabs">
+      <div class="tab active" data-g="snake">🐍 贪吃蛇</div>
+      <div class="tab" data-g="g2048">🔢 2048</div>
+      <div class="tab" data-g="memo">🧠 记忆翻牌</div>
+      <div class="tab" data-g="mole">🔨 打地鼠</div>
+    </div>
+
+    <!-- 贪吃蛇 -->
+    <div class="panel active" id="p-snake">
+      <div class="msg" id="snakeMsg">点击「开始游戏」，用方向键控制小蛇～</div>
+      <div class="g-top">
+        <div class="g-stat">
+          <span class="pill">得分 <b id="snakeScore">0</b></span>
+          <span class="pill">最高 <b id="snakeBest">0</b></span>
+        </div>
+        <div>
+          <button class="g-btn" id="snakeStart">开始游戏</button>
+          <button class="g-btn gray" id="snakePause" style="margin-left:8px;">暂停</button>
+        </div>
+      </div>
+      <div class="stage"><canvas id="snakeCanvas" width="400" height="400"></canvas></div>
+      <div class="dpad">
+        <div class="sp"></div>
+        <button data-d="up">↑</button>
+        <div class="sp"></div>
+        <button data-d="left">←</button>
+        <button data-d="down">↓</button>
+        <button data-d="right">→</button>
+      </div>
+      <p class="tip">玩法：键盘 ↑ ↓ ← → 或手机点方向键控制，吃到 🍓 加分，撞墙或撞到自己就结束。每吃 5 个会加速一点哦～</p>
+    </div>
+
+    <!-- 2048 -->
+    <div class="panel" id="p-g2048">
+      <div class="msg" id="msg2048">滑动合并相同数字，凑出 2048！</div>
+      <div class="g-top">
+        <div class="g-stat">
+          <span class="pill">得分 <b id="score2048">0</b></span>
+          <span class="pill">最高 <b id="best2048">0</b></span>
+        </div>
+        <button class="g-btn" id="new2048">重新开始</button>
+      </div>
+      <div class="stage"><div class="g2048"><div class="grid2048" id="grid2048"></div></div></div>
+      <p class="tip">玩法：电脑用 ↑ ↓ ← → ，手机在棋盘上滑动即可。相同数字合并，棋盘满了且无法移动就结束。</p>
+    </div>
+
+    <!-- 记忆翻牌 -->
+    <div class="panel" id="p-memo">
+      <div class="msg" id="memoMsg">翻开两张相同的图案，考验记忆力！</div>
+      <div class="g-top">
+        <div class="g-stat">
+          <span class="pill">步数 <b id="memoMoves">0</b></span>
+          <span class="pill">已配对 <b id="memoPairs">0</b>/6</span>
+          <span class="pill">用时 <b id="memoTime">0</b>s</span>
+        </div>
+        <button class="g-btn" id="memoNew">重新开始</button>
+      </div>
+      <div class="stage"><div class="memo" id="memoGrid"></div></div>
+      <p class="tip">玩法：点击卡片翻面，找出 6 对相同图案，用最少步数通关～</p>
+    </div>
+
+    <!-- 打地鼠 -->
+    <div class="panel" id="p-mole">
+      <div class="msg" id="moleMsg">30 秒内敲中更多地鼠！</div>
+      <div class="g-top">
+        <div class="g-stat">
+          <span class="pill">得分 <b id="moleScore">0</b></span>
+          <span class="pill">剩余 <b id="moleTime">30</b>s</span>
+          <span class="pill">最高 <b id="moleBest">0</b></span>
+        </div>
+        <button class="g-btn" id="moleStart">开始游戏</button>
+      </div>
+      <div class="stage"><div class="mole" id="moleGrid"></div></div>
+      <p class="tip">玩法：地鼠冒头就点它！金色地鼠 +3 分，普通地鼠 +1 分，点空 -1 分。</p>
+    </div>
+  </section>
+
+  <!-- ======= 个人作品集 ======= -->
+  <section id="works" class="reveal">
+    <div class="sec-title"><span class="dot"></span><h2>💼 个人作品集</h2><span class="line"></span></div>
+    <div class="works">
+      <a class="work" href="https://lyh-215.github.io/naodong-test-quiz/" target="_blank" rel="noopener">
+        <div class="w-ico">🧪</div>
+        <h3>脑洞测试局</h3>
+        <p>一个趣味脑洞剧情测试网站：互动问答、剧情选择与测试结果展示，轻松娱乐向，已部署上线 GitHub Pages，点击即可在线体验。</p>
+        <span class="w-link">在线体验 ↗</span>
+      </a>
+      <div class="work" style="opacity:.75;">
+        <div class="w-ico">🎮</div>
+        <h3>静文的小游戏厅</h3>
+        <p>就是本页面里的游戏模块！包含贪吃蛇、2048、记忆翻牌、打地鼠四款小游戏，纯前端实现，支持手机触屏操作。</p>
+        <span class="w-link" style="background:rgba(0,0,0,.08);color:var(--ink-soft);">向下滚动就能玩 ↓</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="reveal">
+    <div class="sec-title"><span class="dot"></span><h2>联系我</h2><span class="line"></span></div>
+    <div class="contact">
+      <div class="item"><span class="ico">📍</span><div><div class="t">所在城市</div><div class="c">四川 · 成都</div></div></div>
+      <div class="item"><span class="ico">🏫</span><div><div class="t">就读院校</div><div class="c">成都大学</div></div></div>
+      <div class="item"><span class="ico">✉️</span><div><div class="t">QQ 邮箱</div><div class="c"><a href="mailto:1594259315@qq.com" style="color:var(--pink-deep);text-decoration:none;">1594259315@qq.com</a></div></div></div>
+      <div class="item"><span class="ico">💬</span><div><div class="t">微信</div><div class="c">C-0906w</div></div></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>© 2026 程静文 · 个人主页 & 小游戏厅　|　Made with 💗 in Chengdu</p>
+</footer>
+
+<script>
+/* ============ 通用 ============ */
+const $ = id => document.getElementById(id);
+const best = {
+  get(k){ return parseInt(localStorage.getItem('jw_'+k) || '0',10); },
+  set(k,v){ if(v > best.get(k)) localStorage.setItem('jw_'+k, v); }
+};
+
+/* 滚动入场 */
+const io = new IntersectionObserver(es=>{
+  es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); } });
+},{threshold:.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* 技能条 */
+const io2 = new IntersectionObserver(es=>{
+  es.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.bar i').forEach((b,i)=>setTimeout(()=>b.style.width=b.dataset.w+'%', i*120));
+      io2.unobserve(e.target);
+    }
+  });
+},{threshold:.3});
+io2.observe($('skill'));
+
+/* 选项卡 */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    $('p-'+t.dataset.g).classList.add('active');
+  });
+});
+
+/* ============ 贪吃蛇 ============ */
+(function(){
+  const cv = $('snakeCanvas'), ctx = cv.getContext('2d');
+  const N = 20, CELL = 20;
+  let snake, dir, nextDir, food, score, timer, running, paused, speed;
+
+  function reset(){
+    snake = [{x:10,y:10},{x:9,y:10},{x:8,y:10}];
+    dir = {x:1,y:0}; nextDir = {x:1,y:0};
+    score = 0; speed = 130; paused = false; running = false;
+    placeFood(); draw();
+    $('snakeScore').textContent = 0;
+    $('snakeMsg').textContent = '点击「开始游戏」，用方向键控制小蛇～';
+    $('snakeStart').textContent = '开始游戏';
+  }
+  function placeFood(){
+    let p;
+    do{ p = {x:Math.floor(Math.random()*N), y:Math.floor(Math.random()*N)}; }
+    while(snake.some(s=>s.x===p.x && s.y===p.y));
+    food = p;
+  }
+  function draw(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    // 格子
+    ctx.strokeStyle = 'rgba(255,143,171,.12)';
+    for(let i=0;i<=N;i++){
+      ctx.beginPath(); ctx.moveTo(i*CELL,0); ctx.lineTo(i*CELL,cv.height); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0,i*CELL); ctx.lineTo(cv.width,i*CELL); ctx.stroke();
+    }
+    // 食物
+    ctx.font = '18px serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('🍓', food.x*CELL+CELL/2, food.y*CELL+CELL/2+1);
+    // 蛇
+    snake.forEach((s,i)=>{
+      const g = ctx.createLinearGradient(s.x*CELL, s.y*CELL, (s.x+1)*CELL, (s.y+1)*CELL);
+      if(i===0){ g.addColorStop(0,'#e56b8d'); g.addColorStop(1,'#a78bfa'); }
+      else{ const t = 1 - i/snake.length*0.5; g.addColorStop(0,'#ffa8c5'); g.addColorStop(1,'#c4b5fd'); }
+      ctx.fillStyle = g;
+      const r = i===0 ? 7 : 6, pad = (CELL - r*2)/2;
+      ctx.beginPath();
+      ctx.roundRect ? ctx.roundRect(s.x*CELL+pad, s.y*CELL+pad, r*2, r*2, r*0.6) : ctx.rect(s.x*CELL+pad, s.y*CELL+pad, r*2, r*2);
+      ctx.fill();
+    });
+  }
+  function step(){
+    dir = nextDir;
+    const head = {x:snake[0].x + dir.x, y:snake[0].y + dir.y};
+    if(head.x<0||head.y<0||head.x>=N||head.y>=N || snake.some(s=>s.x===head.x&&s.y===head.y)){ gameOver(); return; }
+    snake.unshift(head);
+    if(head.x===food.x && head.y===food.y){
+      score += 10;
+      $('snakeScore').textContent = score;
+      if(score % 50 === 0 && speed > 60){ speed -= 10; restartTimer(); }
+      placeFood();
+    } else { snake.pop(); }
+    draw();
+  }
+  function restartTimer(){ clearInterval(timer); timer = setInterval(step, speed); }
+  function gameOver(){
+    clearInterval(timer); running = false;
+    $('snakeStart').textContent = '再来一局';
+    if(score > best.get('snake')){ best.set('snake', score); $('snakeMsg').textContent = '🎉 新纪录！得分 ' + score + ' 分'; }
+    else $('snakeMsg').textContent = '游戏结束，得分 ' + score + ' 分';
+    $('snakeBest').textContent = best.get('snake');
+  }
+  function start(){
+    if(running) return;
+    reset(); running = true;
+    $('snakeMsg').textContent = '加油呀，别撞墙～';
+    $('snakeStart').textContent = '重新开始';
+    restartTimer();
+  }
+  $('snakeStart').onclick = start;
+  $('snakePause').onclick = ()=>{
+    if(!running) return;
+    paused = !paused;
+    if(paused){ clearInterval(timer); $('snakePause').textContent='继续'; $('snakeMsg').textContent='已暂停'; }
+    else { restartTimer(); $('snakePause').textContent='暂停'; $('snakeMsg').textContent='继续冲！'; }
+  };
+  document.querySelectorAll('.dpad button').forEach(b=>{
+    b.onclick = ()=>turn(b.dataset.d);
+  });
+  document.addEventListener('keydown', e=>{
+    if(!$('p-snake').classList.contains('active')) return;
+    const m = {ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'};
+    if(m[e.key]){ e.preventDefault(); turn(m[e.key]); if(!running) start(); }
+  });
+  function turn(d){
+    const map = {up:{x:0,y:-1},down:{x:0,y:1},left:{x:-1,y:0},right:{x:1,y:0}};
+    const nd = map[d];
+    if(nd.x === -dir.x && nd.y === -dir.y) return;
+    nextDir = nd;
+  }
+  $('snakeBest').textContent = best.get('snake');
+  reset();
+})();
+
+/* ============ 2048 ============ */
+(function(){
+  const grid = $('grid2048');
+  let board, score;
+  const cells = [];
+  for(let i=0;i<16;i++){
+    const d = document.createElement('div');
+    d.className = 'cell';
+    grid.appendChild(d); cells.push(d);
+  }
+  function init(){
+    board = Array(16).fill(0); score = 0;
+    add(); add(); render();
+    $('score2048').textContent = 0;
+    $('msg2048').textContent = '滑动合并相同数字，凑出 2048！';
+  }
+  function add(){
+    const empty = board.map((v,i)=>v===0?i:-1).filter(i=>i>=0);
+    if(!empty.length) return;
+    board[empty[Math.floor(Math.random()*empty.length)]] = Math.random()<0.9 ? 2 : 4;
+  }
+  function render(){
+    board.forEach((v,i)=>{
+      const c = cells[i];
+      c.className = 'cell' + (v ? ' v'+v : '');
+      c.textContent = v || '';
+    });
+  }
+  function slide(line){ // line: 4 个数，返回 [新行, 得分]
+    const arr = line.filter(v=>v!==0);
+    const out = []; let s = 0;
+    for(let i=0;i<arr.length;i++){
+      if(arr[i] === arr[i+1]){ out.push(arr[i]*2); s += arr[i]*2; i++; }
+      else out.push(arr[i]);
+    }
+    while(out.length<4) out.push(0);
+    return [out, s];
+  }
+  function move(dir){
+    let moved = false, gained = 0;
+    const idx = (r,c)=> r*4+c;
+    const lines = [];
+    if(dir==='left' || dir==='right'){
+      for(let r=0;r<4;r++){
+        let line = [0,1,2,3].map(c=>board[idx(r,c)]);
+        if(dir==='right') line = line.reverse();
+        const [nl,s] = slide(line);
+        const final = dir==='right' ? nl.reverse() : nl;
+        for(let c=0;c<4;c++){ if(board[idx(r,c)]!==final[c]) moved = true; board[idx(r,c)] = final[c]; }
+        gained += s;
+      }
+    } else {
+      for(let c=0;c<4;c++){
+        let line = [0,1,2,3].map(r=>board[idx(r,c)]);
+        if(dir==='down') line = line.reverse();
+        const [nl,s] = slide(line);
+        const final = dir==='down' ? nl.reverse() : nl;
+        for(let r=0;r<4;r++){ if(board[idx(r,c)]!==final[r]) moved = true; board[idx(r,c)] = final[r]; }
+        gained += s;
+      }
+    }
+    if(moved){
+      score += gained; add(); render();
+      $('score2048').textContent = score;
+      if(score > best.get('g2048')){ best.set('g2048', score); }
+      $('best2048').textContent = best.get('g2048');
+      if(board.includes(2048)) $('msg2048').textContent = '🏆 太厉害了，凑出 2048！';
+      else if(!canMove()) $('msg2048').textContent = '游戏结束，最终得分 ' + score;
+    }
+  }
+  function canMove(){
+    if(board.includes(0)) return true;
+    for(let r=0;r<4;r++) for(let c=0;c<4;c++){
+      const v = board[r*4+c];
+      if(c<3 && v===board[r*4+c+1]) return true;
+      if(r<3 && v===board[(r+1)*4+c]) return true;
+    }
+    return false;
+  }
+  $('new2048').onclick = init;
+  document.addEventListener('keydown', e=>{
+    if(!$('p-g2048').classList.contains('active')) return;
+    const m = {ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'};
+    if(m[e.key]){ e.preventDefault(); move(m[e.key]); }
+  });
+  let sx=0, sy=0;
+  $('grid2048').addEventListener('touchstart', e=>{ sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, {passive:true});
+  $('grid2048').addEventListener('touchend', e=>{
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    if(Math.abs(dx) < 24 && Math.abs(dy) < 24) return;
+    if(Math.abs(dx) > Math.abs(dy)) move(dx>0?'right':'left'); else move(dy>0?'down':'up');
+  });
+  $('best2048').textContent = best.get('g2048');
+  init();
+})();
+
+/* ============ 记忆翻牌 ============ */
+(function(){
+  const emojis = ['🌸','🌷','🍓','🍰','🐰','🌟'];
+  const gridEl = $('memoGrid');
+  let first = null, lock = false, moves = 0, pairs = 0, time = 0, tick = null;
+
+  function init(){
+    clearInterval(tick); time = 0; moves = 0; pairs = 0; first = null; lock = false;
+    $('memoMoves').textContent = 0; $('memoPairs').textContent = 0; $('memoTime').textContent = 0;
+    $('memoMsg').textContent = '翻开两张相同的图案，考验记忆力！';
+    const deck = [...emojis, ...emojis].sort(()=>Math.random()-0.5);
+    gridEl.innerHTML = '';
+    deck.forEach(e=>{
+      const c = document.createElement('div');
+      c.className = 'mcard';
+      c.innerHTML = '<div class="in"><div class="f">?</div><div class="b">'+e+'</div></div>';
+      c.dataset.e = e;
+      c.onclick = ()=>flip(c);
+      gridEl.appendChild(c);
+    });
+  }
+  function startTimer(){ if(tick) return; tick = setInterval(()=>{ time++; $('memoTime').textContent = time; },1000); }
+  function flip(c){
+    if(lock || c.classList.contains('flip') || c.classList.contains('done')) return;
+    startTimer();
+    c.classList.add('flip');
+    if(!first){ first = c; return; }
+    moves++; $('memoMoves').textContent = moves;
+    const a = first;
+    if(a.dataset.e === c.dataset.e){
+      a.classList.add('done'); c.classList.add('done');
+      first = null; pairs++; $('memoPairs').textContent = pairs;
+      if(pairs === 6){
+        clearInterval(tick);
+        $('memoMsg').textContent = '🎉 通关啦！用了 ' + moves + ' 步 / ' + time + ' 秒';
+      }
+    } else {
+      lock = true;
+      setTimeout(()=>{ a.classList.remove('flip'); c.classList.remove('flip'); first = null; lock = false; }, 700);
+    }
+  }
+  $('memoNew').onclick = init;
+  init();
+})();
+
+/* ============ 打地鼠 ============ */
+(function(){
+  const gridEl = $('moleGrid');
+  let score = 0, left = 30, timer = null, spawn = null, playing = false;
+  for(let i=0;i<9;i++){
+    const h = document.createElement('div');
+    h.className = 'hole';
+    h.innerHTML = '<span class="m">🐹</span>';
+    h.onclick = ()=>hit(h);
+    gridEl.appendChild(h);
+  }
+  const holes = [...gridEl.children];
+  function hideAll(){ holes.forEach(h=>h.classList.remove('up','hit')); }
+  function start(){
+    if(playing) return;
+    playing = true; score = 0; left = 30;
+    $('moleScore').textContent = 0; $('moleTime').textContent = 30;
+    $('moleMsg').textContent = '快敲！地鼠冒头啦～';
+    $('moleStart').textContent = '重新开始';
+    clearInterval(timer); clearInterval(spawn);
+    timer = setInterval(()=>{
+      left--; $('moleTime').textContent = left;
+      if(left <= 0) end();
+    },1000);
+    spawn = setInterval(()=>{
+      hideAll();
+      const h = holes[Math.floor(Math.random()*9)];
+      const gold = Math.random() < 0.25;
+      h.querySelector('.m').textContent = gold ? '👑' : '🐹';
+      h.dataset.gold = gold ? '1' : '0';
+      h.classList.add('up');
+    }, 800);
+  }
+  function hit(h){
+    if(!playing) return;
+    if(h.classList.contains('up')){
+      const gold = h.dataset.gold === '1';
+      score += gold ? 3 : 1;
+      $('moleScore').textContent = score;
+      h.classList.add('hit');
+      h.classList.remove('up');
+    } else {
+      score = Math.max(0, score - 1);
+      $('moleScore').textContent = score;
+    }
+  }
+  function end(){
+    playing = false; clearInterval(timer); clearInterval(spawn); hideAll();
+    $('moleStart').textContent = '开始游戏';
+    if(score > best.get('mole')){ best.set('mole', score); $('moleMsg').textContent = '🎉 新纪录！30 秒敲中 ' + score + ' 分'; }
+    else $('moleMsg').textContent = '时间到！本轮 ' + score + ' 分';
+    $('moleBest').textContent = best.get('mole');
+  }
+  $('moleStart').onclick = start;
+  $('moleBest').textContent = best.get('mole');
+})();
+</script>
+</body>
+</html>
